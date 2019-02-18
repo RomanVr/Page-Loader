@@ -1,0 +1,62 @@
+{
+  "name": "page-loader",
+  "version": "1.0.0",
+  "description": "learning project numer tree",
+  "main": "dist/index.js",
+  "bin": {
+    "page-loader": "dist/bin/page-loader.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "eslint": "eslint",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "test": "jest",
+    "prepublishOnly": "npm run build",
+    "babel-node": "babel-node"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "<rootDir>/__tests__/__fixtures__"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RomanVr/project-lvl3-s406.git"
+  },
+  "author": "RomanVr",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RomanVr/project-lvl3-s406/issues"
+  },
+  "homepage": "https://github.com/RomanVr/project-lvl3-s406#readme",
+  "devdependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.5",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.5",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jest": "^21.24.1",
+    "jest": "^24.1.0",
+    "nock": "^10.0.6"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "commander": "^2.19.0",
+    "lodash": "^4.17.11"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.14.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-jest": "^22.3.0"
+  }
+}
