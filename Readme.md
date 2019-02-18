@@ -25,6 +25,4 @@ Options:
     * -o, --output [dir]  Directory destination (default: "")
     * -h, --help           output usage information
 
-to usage with debug logging: DEBUG=pageLoader page-loader [options] `address`
-
 [Sample usage](https://asciinema.org/a/QgTkLHI7TYTWRBF33mh1cqCuq)
