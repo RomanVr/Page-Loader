@@ -25,4 +25,4 @@ Options:
     * -o, --output [dir]  Directory destination (default: "")
     * -h, --help           output usage information
 
-[Sample usage](https://asciinema.org/a/QgTkLHI7TYTWRBF33mh1cqCuq)
+[Sample usage](https://asciinema.org/a/VDEsVmvlnleBdIyHLyp1xCUHV)
