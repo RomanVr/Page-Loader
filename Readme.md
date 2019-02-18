@@ -1,7 +1,7 @@
-[![Build Status](https://travis-ci.org/RomanVr/project-lvl3-s394.svg?branch=master)](https://travis-ci.org/RomanVr/project-lvl3-s394)
-[![Maintainability](https://api.codeclimate.com/v1/badges/d17dde6f8843fb00d9d4/maintainability)](https://codeclimate.com/github/RomanVr/project-lvl3-s394/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/d17dde6f8843fb00d9d4/test_coverage)](https://codeclimate.com/github/RomanVr/project-lvl3-s394/test_coverage)
-# project-lvl3-s394
+[![Build Status](https://travis-ci.org/RomanVr/project-lvl3-s406.svg?branch=master)](https://travis-ci.org/RomanVr/project-lvl3-s406)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0d232f4641791ae44cba/maintainability)](https://codeclimate.com/github/RomanVr/project-lvl3-s406/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/0d232f4641791ae44cba/test_coverage)](https://codeclimate.com/github/RomanVr/project-lvl3-s406/test_coverage)
+# project-lvl3-s406
 ---
 This utility allows you to download pages from the network to the directory (output).
 
