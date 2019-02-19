@@ -22,7 +22,9 @@ page-loader [options] `<address>`
 
 Options:
     * -V, --version        output the version number
+
     * -o, --output [dir]  Directory destination (default: "")
+
     * -h, --help           output usage information
 
-[Sample usage](https://asciinema.org/a/VDEsVmvlnleBdIyHLyp1xCUHV)
+[Sample usage](https://asciinema.org/a/nBzIDBcJBipzdS2gr1WTwghkZ)
