@@ -3,7 +3,10 @@ import url from 'url';
 import _ from 'lodash';
 import path from 'path';
 import cheerio from 'cheerio';
+import debug from 'debug';
 import { promises as fs } from 'fs';
+
+const debugLog = debug('page-loader');
 
 export const getNamePage = (address) => {
   const urlObj = url.parse(address);
@@ -11,11 +14,9 @@ export const getNamePage = (address) => {
 };
 
 export const getNameAttr = (address) => {
-  const urlObj = url.parse(address);
-  urlObj.path = _.trimStart(urlObj.path, '/');
-  const ext = path.extname(urlObj.path);
-  urlObj.path = urlObj.path.substring(0, urlObj.path.length - ext.length);
-  const convertedNameAttr = `${urlObj.path.replace(/\W/g, '-')}${ext}`;
+  const pathObj = path.parse(url.parse(address).path);
+  const pathAttrWithName = path.join(_.trimStart(pathObj.dir, '/'), pathObj.name);
+  const convertedNameAttr = `${pathAttrWithName.replace(/\W/g, '-')}${pathObj.ext}`;
   return convertedNameAttr;
 };
 
@@ -29,7 +30,13 @@ const getSelector = tag => `${tag}[${typesLocalResources[tag].attr}^=\\/]`;
 
 const loadArraybufferResource = (address, output) => axios
   .get(address, { responseType: 'arraybuffer' })
-  .then(response => fs.writeFile(output, response.data));
+  .then((response) => {
+    debugLog(`Resource url: ${address} was loaded`);
+    return fs.writeFile(output, response.data);
+  })
+  .then(() => {
+    debugLog(`Resource ${path.basename(output)} is write to disk`);
+  });
 
 const downloadResourcesByTag = (tag, dom, dirLocal, address, output) => {
   const selector = getSelector(tag);
@@ -65,9 +72,15 @@ const downloadLocalResources = (html, address, output) => {
 const loadPage = (address, output) => {
   const fileName = path.join(output, `${getNamePage(address)}.html`);
   return axios.get(address)
-    .then(response => response.data)
+    .then((response) => {
+      debugLog(`Page ${address} was loaded`);
+      return response.data;
+    })
     .then(html => downloadLocalResources(html, address, output))
-    .then(newHtml => fs.writeFile(fileName, newHtml));
+    .then(newHtml => fs.writeFile(fileName, newHtml))
+    .then(() => {
+      debugLog(`Page ${address} is write to disk`);
+    });
 };
 
 export default loadPage;

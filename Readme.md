@@ -21,9 +21,10 @@ you can run the utility
 page-loader [options] `<address>`
 
 Options:
+
     * -V, --version        output the version number
 
-    * -o, --output [dir]  Directory destination (default: "")
+    * -o, --output [dir]  Directory destination (default: "<current directory>")
 
     * -h, --help           output usage information
 

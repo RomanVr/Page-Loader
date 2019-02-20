@@ -3,7 +3,7 @@ import nock from 'nock';
 import os from 'os';
 import _ from 'lodash';
 import { promises as fs } from 'fs';
-import loadPage, { getNamePage, getNameAttr } from '../src';
+import loadPage, * as loader from '../src';
 
 nock.disableNetConnect();
 
@@ -14,14 +14,14 @@ describe('Convert address to name', () => {
     const address = 'https://hexlet.io/courses';
     const expected = 'hexlet-io-courses';
 
-    const fileName = getNamePage(address);
+    const fileName = loader.getNamePage(address);
     return expect(fileName).toBe(expected);
   });
   it('set 2: https://yandex.ru', () => {
     const address = 'https://yandex.ru';
     const expected = 'yandex-ru';
 
-    const fileName = getNamePage(address);
+    const fileName = loader.getNamePage(address);
     return expect(fileName).toBe(expected);
   });
 });
@@ -31,14 +31,14 @@ describe('Converted local addres to name', () => {
     const address = '/courses';
     const expected = 'courses';
 
-    const fileName = getNameAttr(address);
+    const fileName = loader.getNameAttr(address);
     return expect(fileName).toBe(expected);
   });
   it('set 2: /cgn-ccc/image.rt.img', () => {
     const address = '/cgn-ccc/image.rt.img';
     const expected = 'cgn-ccc-image-rt.img';
 
-    const fileName = getNameAttr(address);
+    const fileName = loader.getNameAttr(address);
     return expect(fileName).toBe(expected);
   });
 });
@@ -61,7 +61,7 @@ test('Download page', async () => {
   const expectedFilePath = path.join(pathTemplate, testExpectedFile);
   const expectedFile = await fs.readFile(expectedFilePath);
 
-  const outputFile = path.join(os.tmpdir(), `${getNamePage(addressTest)}.html`);
+  const outputFile = path.join(os.tmpdir(), `${loader.getNamePage(addressTest)}.html`);
   const actualFile = await fs.readFile(outputFile);
 
   expect(actualFile.toString()).toBe(expectedFile.toString());

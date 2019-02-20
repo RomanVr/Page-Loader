@@ -7,7 +7,7 @@ start1:
 		npx babel-node -- src/bin/page-loader.js $(address)
 
 debug1:
-		DEBUG=pageLoader npx babel-node -- src/bin/page-loader.js $(address)
+		DEBUG=page-loader npx babel-node -- src/bin/page-loader.js $(address)
 
 start2:
 		npx babel-node -- src/bin/page-loader.js https://yandex.ru
@@ -25,7 +25,7 @@ test-coverage:
 		npm test -- --coverage
 
 testc:
-		sudo DEBUG=pageLoader npm test -- --coverage
+		sudo DEBUG=page-loader npm test -- --coverage
 
 build:
 		rm -rf dist
