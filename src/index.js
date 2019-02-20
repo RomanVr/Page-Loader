@@ -30,10 +30,16 @@ const getSelector = tag => `${tag}[${typesLocalResources[tag].attr}^=\\/]`;
 
 const loadArraybufferResource = (address, output) => axios
   .get(address, { responseType: 'arraybuffer' })
-  .then((response) => {
-    debugLog(`Resource url: ${address} was loaded`);
-    return fs.writeFile(output, response.data);
-  })
+  .then(
+    (response) => {
+      debugLog(`Resource url: ${address} was loaded`);
+      return fs.writeFile(output, response.data);
+    },
+    (error) => {
+      console.error(`Resource at url: ${address} was not loaded!`);
+      throw error;
+    },
+  )
   .then(() => {
     debugLog(`Resource ${path.basename(output)} is write to disk`);
   });
@@ -72,10 +78,16 @@ const downloadLocalResources = (html, address, output) => {
 const loadPage = (address, output) => {
   const fileName = path.join(output, `${getNamePage(address)}.html`);
   return axios.get(address)
-    .then((response) => {
-      debugLog(`Page ${address} was loaded`);
-      return response.data;
-    })
+    .then(
+      (response) => {
+        debugLog(`Page ${address} was loaded`);
+        return response.data;
+      },
+      (error) => {
+        console.error(`Page at url: ${address} was not loaded!`);
+        throw error;
+      },
+    )
     .then(html => downloadLocalResources(html, address, output))
     .then(newHtml => fs.writeFile(fileName, newHtml))
     .then(() => {

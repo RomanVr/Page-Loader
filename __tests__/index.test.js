@@ -108,3 +108,16 @@ test('Download page with resources', async () => {
 
   expect(actualPageFile.toString()).toBe(expectedPageFile.toString());
 });
+
+test('Download page with wrong response statusCode', async () => {
+  nock('https://host')
+    .get('/test')
+    .reply(301);
+
+  const addressTest = 'https://host/test';
+
+  await expect(loadPage(addressTest, os.tmpdir())).rejects.toThrowErrorMatchingSnapshot();
+});
+
+describe('Download resources with wrong response statusCode', () => {
+});

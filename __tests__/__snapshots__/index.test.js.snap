@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download page with wrong response statusCode 1`] = `"Request failed with status code 301"`;
