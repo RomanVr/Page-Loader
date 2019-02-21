@@ -84,15 +84,24 @@ const loadPage = (address, output) => {
         return response.data;
       },
       (error) => {
-        console.error(`Page at url: ${address} was not loaded!`);
+        console.error(`Page at url: ${address} was not loaded!\n
+          error: ${error.message}`);
+        process.exitCode = 1;
         throw error;
       },
     )
     .then(html => downloadLocalResources(html, address, output))
     .then(newHtml => fs.writeFile(fileName, newHtml))
-    .then(() => {
-      debugLog(`Page ${address} is write to disk`);
-    });
+    .then(
+      () => {
+        debugLog(`Page ${address} is write to disk`);
+      },
+      (error) => {
+        console.error(`Page ${address} is not write to disk!\n
+          error: ${error.message}`);
+        throw error;
+      },
+    );
 };
 
 export default loadPage;
