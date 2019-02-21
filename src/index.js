@@ -28,20 +28,18 @@ const typesLocalResources = {
 
 const getSelector = tag => `${tag}[${typesLocalResources[tag].attr}^=\\/]`;
 
-const loadArraybufferResource = (address, output) => axios
+export const loadArraybufferResource = (address, output) => axios
   .get(address, { responseType: 'arraybuffer' })
-  .then(
-    (response) => {
-      debugLog(`Resource url: ${address} was loaded`);
-      return fs.writeFile(output, response.data);
-    },
-    (error) => {
-      console.error(`Resource at url: ${address} was not loaded!`);
-      throw error;
-    },
-  )
+  .then((response) => {
+    debugLog(`Resource url: ${address} was loaded`);
+    return fs.writeFile(output, response.data);
+  })
   .then(() => {
-    debugLog(`Resource ${path.basename(output)} is write to disk`);
+    debugLog(`Resource ${output} is write to disk`);
+  })
+  .catch((error) => {
+    console.error(error.message);
+    return error.message;
   });
 
 const downloadResourcesByTag = (tag, dom, dirLocal, address, output) => {
@@ -72,36 +70,29 @@ const downloadLocalResources = (html, address, output) => {
         );
       return Promise.all(localResources);
     })
-    .then(() => `${dom.html()}\n`);
+    .then(() => `${dom.html()}\n`)
+    .catch((error) => {
+      console.error(error.message);
+      throw error;
+    });
 };
 
 const loadPage = (address, output) => {
   const fileName = path.join(output, `${getNamePage(address)}.html`);
   return axios.get(address)
-    .then(
-      (response) => {
-        debugLog(`Page ${address} was loaded`);
-        return response.data;
-      },
-      (error) => {
-        console.error(`Page at url: ${address} was not loaded!\n
-          error: ${error.message}`);
-        process.exitCode = 1;
-        throw error;
-      },
-    )
+    .then((response) => {
+      debugLog(`Page ${address} was loaded`);
+      return response.data;
+    })
     .then(html => downloadLocalResources(html, address, output))
     .then(newHtml => fs.writeFile(fileName, newHtml))
-    .then(
-      () => {
-        debugLog(`Page ${address} is write to disk`);
-      },
-      (error) => {
-        console.error(`Page ${address} is not write to disk!\n
-          error: ${error.message}`);
-        throw error;
-      },
-    );
+    .then(() => {
+      debugLog(`Page ${address} is write to disk`);
+    })
+    .catch((error) => {
+      console.error(error.message);
+      process.exitCode = 1;
+    });
 };
 
 export default loadPage;

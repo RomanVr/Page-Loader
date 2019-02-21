@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Download page with wrong response statusCode 1`] = `"Request failed with status code 301"`;
+
+exports[`Download resources with errors Test with no access to the local directory 1`] = `"EEXIST: file already exists, mkdir '/tmp/localwrong-ru_files'"`;

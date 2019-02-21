@@ -2,6 +2,7 @@ import path from 'path';
 import nock from 'nock';
 import os from 'os';
 import _ from 'lodash';
+import url from 'url';
 import { promises as fs } from 'fs';
 import loadPage, * as loader from '../src';
 
@@ -68,45 +69,47 @@ test('Download page', async () => {
 });
 
 const tagsResource = {
-  link: { url: '/local/courses', pathLocal: 'local/courses.html', contentType: 'text/html' },
-  script: { url: '/local/script.js', pathLocal: 'local/script.js', contentType: 'text/plain' },
-  img: { url: '/local/cats.jpg', pathLocal: 'local/cats.jpg', contentType: 'image/jpg' },
+  link: { urlRes: '/local/courses', pathLocal: 'local/courses.html', contentType: 'text/html' },
+  script: { urlRes: '/local/script.js', pathLocal: 'local/script.js', contentType: 'text/plain' },
+  img: { urlRes: '/local/cats.jpg', pathLocal: 'local/cats.jpg', contentType: 'image/jpg' },
 };
 
-beforeAll(() => {
-  const testLocalFile = 'localRes.html';
-  const domain = 'https://local.ru';
-  const localePagePath = path.join(pathTemplate, testLocalFile);
-  nock(domain)
-    .get('/')
-    .replyWithFile(
-      200,
-      localePagePath,
-      { 'Content-Type': 'text/html' },
-    );
-  _.keys(tagsResource).forEach((key) => {
-    const { url, pathLocal, contentType } = tagsResource[key];
-    const filePath = path.join(pathTemplate, pathLocal);
+describe('Download page with resources', () => {
+  beforeAll(() => {
+    const testLocalFile = 'localRes.html';
+    const domain = 'https://local.ru';
+    const localePagePath = path.join(pathTemplate, testLocalFile);
     nock(domain)
-      .get(url)
+      .get('/')
       .replyWithFile(
         200,
-        filePath,
-        { 'Content-Type': contentType },
+        localePagePath,
+        { 'Content-Type': 'text/html' },
       );
+    _.keys(tagsResource).forEach((key) => {
+      const { urlRes, pathLocal, contentType } = tagsResource[key];
+      const filePath = path.join(pathTemplate, pathLocal);
+      nock(domain)
+        .get(urlRes)
+        .replyWithFile(
+          200,
+          filePath,
+          { 'Content-Type': contentType },
+        );
+    });
   });
-});
 
-test('Download page with resources', async () => {
-  const addressTest = 'https://local.ru';
-  const pageFileName = 'local-ru.html';
+  test('Download resources', async () => {
+    const addressTest = 'https://local.ru';
+    const pageFileName = 'local-ru.html';
 
-  await loadPage(addressTest, os.tmpdir());
+    await loadPage(addressTest, os.tmpdir());
 
-  const actualPageFile = await fs.readFile(path.join(os.tmpdir(), pageFileName));
-  const expectedPageFile = await fs.readFile(path.join(pathTemplate, pageFileName));
+    const actualPageFile = await fs.readFile(path.join(os.tmpdir(), pageFileName));
+    const expectedPageFile = await fs.readFile(path.join(pathTemplate, pageFileName));
 
-  expect(actualPageFile.toString()).toBe(expectedPageFile.toString());
+    expect(actualPageFile.toString()).toBe(expectedPageFile.toString());
+  });
 });
 
 test('Download page with wrong response statusCode', async () => {
@@ -119,5 +122,42 @@ test('Download page with wrong response statusCode', async () => {
   await expect(loadPage(addressTest, os.tmpdir())).rejects.toThrowErrorMatchingSnapshot();
 });
 
-describe('Download resources with wrong response statusCode', () => {
+describe('Download resources with errors', () => {
+  const domain = 'https://localWrong.ru';
+  const wrongStatus = 404;
+  beforeAll(() => {
+    _.keys(tagsResource).forEach((key) => {
+      const { urlRes } = tagsResource[key];
+      nock(domain)
+        .get(urlRes)
+        .reply(wrongStatus);
+    });
+  });
+
+  _.keys(tagsResource).forEach(async (key) => {
+    test(`Wrong response for tag ${key}`, async () => {
+      const { urlRes } = tagsResource[key];
+      const addressTest = url.resolve(domain, urlRes);
+
+      const actualResponse = await loader.loadArraybufferResource(addressTest, os.tmpdir());
+      expect(actualResponse).toMatch(`${wrongStatus.toString()}`);
+    });
+  });
+
+  test('Test with no access to the local directory', async () => {
+    const testLocalFile = 'localRes.html';
+    const localePagePath = path.join(pathTemplate, testLocalFile);
+    nock(domain)
+      .get('/')
+      .replyWithFile(
+        200,
+        localePagePath,
+        { 'Content-Type': 'text/html' },
+      );
+
+    const pathDirLocal = path.join(os.tmpdir(), `${loader.getNamePage(domain)}_files`);
+    await fs.mkdir(pathDirLocal);
+
+    await expect(loadPage(domain, os.tmpdir())).rejects.toThrowErrorMatchingSnapshot();
+  });
 });
