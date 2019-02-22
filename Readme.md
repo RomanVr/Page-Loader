@@ -33,3 +33,5 @@ to usage with debug logging: DEBUG=page-loader page-loader [options] `address`
 [Sample usage](https://asciinema.org/a/nBzIDBcJBipzdS2gr1WTwghkZ)
 
 [Sample usage with debug ](https://asciinema.org/a/xSFwj5YzWEtSoIJpMRLj3fsqE)
+
+[Error handling with tests](https://asciinema.org/a/6Dgof4AP41qa2Ufpobllm2tcG)
