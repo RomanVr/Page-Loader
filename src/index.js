@@ -65,16 +65,15 @@ const downloadLocalResources = (html, address, output) => {
     .then(() => {
       const localResources = _.keys(typesLocalResources)
         .reduce(
-          (acc, tag) => [...acc, ...downloadResourcesByTag(tag, dom, dirLocal, address, output)],
+          (acc, tag) => [
+            ...acc,
+            ...downloadResourcesByTag(tag, dom, dirLocal, address, output),
+          ],
           [],
         );
       return Promise.all(localResources);
     })
-    .then(() => `${dom.html()}\n`)
-    .catch((error) => {
-      console.error(error.message);
-      throw error;
-    });
+    .then(() => `${dom.html()}\n`);
 };
 
 const loadPage = (address, output) => {
@@ -92,6 +91,7 @@ const loadPage = (address, output) => {
     .catch((error) => {
       console.error(error.message);
       process.exitCode = 1;
+      throw error;
     });
 };
 
