@@ -30,7 +30,7 @@ Options:
 
 to usage with debug logging: DEBUG=page-loader page-loader [options] `address`
 
-[Sample usage](https://asciinema.org/a/Usa88CsFQopZSp9U3HxLW52vq)
+[Sample usage](https://asciinema.org/a/YonkfTUMIgMYN6fEFL0l78jrL)
 
 [Sample usage with debug ](https://asciinema.org/a/xSFwj5YzWEtSoIJpMRLj3fsqE)
 
