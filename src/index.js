@@ -37,10 +37,6 @@ export const loadArraybufferResource = (address, output) => axios
   })
   .then(() => {
     debugLog(`Resource ${output} is write to disk`);
-  })
-  .catch((error) => {
-    console.error(error.message);
-    return error.message;
   });
 
 const downloadResourcesByTag = (tag, dom, dirLocal, address, output) => {
@@ -75,7 +71,7 @@ const downloadLocalResources = (html, address, output) => {
           ],
           [],
         );
-      const tasks = new Listr(localResources);
+      const tasks = new Listr(localResources, { concurrent: true, exitOnError: false });
       return tasks.run();
     })
     .then(() => `${dom.html()}\n`);

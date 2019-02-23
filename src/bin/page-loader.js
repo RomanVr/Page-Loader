@@ -9,5 +9,8 @@ programm
   .description('Utility to download the address from the network')
   .option('-o, --output [dir]', 'Directory destination', currentDir)
   .arguments('<address>')
-  .action(address => loadPage(address, programm.output));
+  .action(address => loadPage(address, programm.output)
+    .catch((error) => {
+      console.error(error.message);
+    }));
 programm.parse(process.argv);

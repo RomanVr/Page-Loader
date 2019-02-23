@@ -139,8 +139,8 @@ describe('Download resources with errors', () => {
       const { urlRes } = tagsResource[key];
       const addressTest = url.resolve(domain, urlRes);
 
-      const actualResponse = await loader.loadArraybufferResource(addressTest, os.tmpdir());
-      expect(actualResponse).toMatch(`${wrongStatus.toString()}`);
+      await expect(loader.loadArraybufferResource(addressTest, os.tmpdir))
+        .rejects.toThrowErrorMatchingSnapshot();
     });
   });
 
