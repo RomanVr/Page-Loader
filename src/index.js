@@ -4,6 +4,7 @@ import _ from 'lodash';
 import path from 'path';
 import cheerio from 'cheerio';
 import debug from 'debug';
+import Listr from 'listr';
 import { promises as fs } from 'fs';
 
 const debugLog = debug('page-loader');
@@ -50,7 +51,10 @@ const downloadResourcesByTag = (tag, dom, dirLocal, address, output) => {
     const fullPathAttr = path.join(output, dirLocal, newNameAttr);// путь сохраннеия ресурса на диск
     const addressAttr = url.resolve(address, attrValue);// url attr для загрузки
     dom(elem).attr(typesLocalResources[tag].attr, path.join(dirLocal, newNameAttr));
-    return loadArraybufferResource(addressAttr, fullPathAttr);// Промис с загрузкой ресурса
+    return {
+      title: `${addressAttr}`,
+      task: () => loadArraybufferResource(addressAttr, fullPathAttr), // Промис с загрузкой ресурса
+    };
   }).get();
   return resources;
 };
@@ -71,7 +75,8 @@ const downloadLocalResources = (html, address, output) => {
           ],
           [],
         );
-      return Promise.all(localResources);
+      const tasks = new Listr(localResources);
+      return tasks.run();
     })
     .then(() => `${dom.html()}\n`);
 };
@@ -84,14 +89,12 @@ const loadPage = (address, output) => {
       return response.data;
     })
     .then(html => downloadLocalResources(html, address, output))
-    .then(newHtml => fs.writeFile(fileName, newHtml))
+    .then(newHtml => new Listr([{
+      title: `Page was downloaded as '${getNamePage(address)}.html'`,
+      task: () => fs.writeFile(fileName, newHtml),
+    }]).run())
     .then(() => {
       debugLog(`Page ${address} is write to disk`);
-    })
-    .catch((error) => {
-      console.error(error.message);
-      process.exitCode = 1;
-      throw error;
     });
 };
 
