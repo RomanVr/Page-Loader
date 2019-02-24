@@ -78,19 +78,19 @@ const downloadLocalResources = (html, address, output) => {
 };
 
 const loadPage = (address, output) => {
-  const fileName = path.join(output, `${getNamePage(address)}.html`);
-  return axios.get(address)
+  const nameFilePage = `${getNamePage(address)}.html`;
+  const fileName = path.join(output, nameFilePage);
+  return fs.access(output)
+    .then(() => axios.get(address))
     .then((response) => {
       debugLog(`Page ${address} was loaded`);
       return response.data;
     })
     .then(html => downloadLocalResources(html, address, output))
-    .then(newHtml => new Listr([{
-      title: `Page was downloaded as '${getNamePage(address)}.html'`,
-      task: () => fs.writeFile(fileName, newHtml),
-    }]).run())
+    .then(newHtml => fs.writeFile(fileName, newHtml))
     .then(() => {
       debugLog(`Page ${address} is write to disk`);
+      return nameFilePage;
     });
 };
 

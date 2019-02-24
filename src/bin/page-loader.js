@@ -10,7 +10,9 @@ programm
   .option('-o, --output [dir]', 'Directory destination', currentDir)
   .arguments('<address>')
   .action(address => loadPage(address, programm.output)
+    .then(nameFilePage => console.log(`Page was downloaded as '${nameFilePage}`))
     .catch((error) => {
-      console.error(error.message);
+      console.error(`${error.code}: ${error.message}`);
+      process.exit(1);
     }));
 programm.parse(process.argv);
